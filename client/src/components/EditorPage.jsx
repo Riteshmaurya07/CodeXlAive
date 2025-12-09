@@ -38,11 +38,11 @@ function EditorPage() {
   const [isCompileWindowOpen, setIsCompileWindowOpen] = useState(false);
   const [isCompiling, setIsCompiling] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("python3");
-  const [socket, setSocket] = useState(null);        // socket for child components
-  const [theme, setTheme] = useState("dark");        // "dark" | "light"
+  const [socket, setSocket] = useState(null);      // socket for Editor
+  const [theme, setTheme] = useState("dark");      // "dark" | "light"
 
   const codeRef = useRef(null);
-  const socketRef = useRef(null);                    // for cleanup only
+  const socketRef = useRef(null);                  // for cleanup
 
   const Location = useLocation();
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ function EditorPage() {
 
       const s = await initSocket();
       socketRef.current = s;
-      setSocket(s); // will trigger re-render with socket instance
+      setSocket(s);
 
       s.on("connect_error", handleErrors);
       s.on("connect_failed", handleErrors);
@@ -74,7 +74,7 @@ function EditorPage() {
         }
         setClients(clients);
 
-        // send current code to the newly joined user
+        // send current code to newly joined user
         s.emit(ACTIONS.SYNC_CODE, {
           code: codeRef.current,
           socketId,
@@ -115,7 +115,7 @@ function EditorPage() {
     }
   };
 
-  const leaveRoom = async () => {
+  const leaveRoom = () => {
     navigate("/");
   };
 
@@ -141,7 +141,7 @@ function EditorPage() {
   };
 
   const toggleCompileWindow = () => {
-    setIsCompileWindowOpen(!isCompileWindowOpen);
+    setIsCompileWindowOpen((prev) => !prev);
   };
 
   const toggleTheme = () => {
@@ -189,7 +189,7 @@ function EditorPage() {
             backgroundColor: theme === "dark" ? "#1c1e29" : "#f5f5f5",
           }}
         >
-          {/* Top bar: theme toggle + language selector */}
+          {/* Top bar: theme + language */}
           <div className="bg-dark p-2 d-flex justify-content-between align-items-center">
             <button
               className="btn btn-sm btn-outline-light"
@@ -211,14 +211,17 @@ function EditorPage() {
             </select>
           </div>
 
-          <Editor
-            socket={socket}
-            roomId={roomId}
-            theme={theme}
-            onCodeChange={(code) => {
-              codeRef.current = code;
-            }}
-          />
+          {/* Editor fills remaining space */}
+          <div className="flex-grow-1 overflow-hidden">
+            <Editor
+              socket={socket}
+              roomId={roomId}
+              theme={theme}
+              onCodeChange={(code) => {
+                codeRef.current = code;
+              }}
+            />
+          </div>
         </div>
       </div>
 

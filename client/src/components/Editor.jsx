@@ -3,7 +3,7 @@ import CodeMirror from "codemirror";
 
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/dracula.css";
-import "codemirror/theme/eclipse.css";           // 👈 light theme
+import "codemirror/theme/eclipse.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
@@ -12,47 +12,68 @@ import { ACTIONS } from "../Actions";
 
 function Editor({ socket, roomId, onCodeChange, theme }) {
   const editorRef = useRef(null);
+  const textareaRef = useRef(null);
 
-  // Initialize CodeMirror
+  // 👇 refs to always have latest values inside the change handler
+  const socketRef = useRef(socket);
+  const roomIdRef = useRef(roomId);
+
   useEffect(() => {
-    const textarea = document.getElementById("realtimeEditor");
-    if (!textarea) return;
+    socketRef.current = socket;
+  }, [socket]);
 
-    const editor = CodeMirror.fromTextArea(textarea, {
+  useEffect(() => {
+    roomIdRef.current = roomId;
+  }, [roomId]);
+
+  // 🔹 Initialize CodeMirror ONCE
+  useEffect(() => {
+    if (!textareaRef.current) return;
+
+    const editor = CodeMirror.fromTextArea(textareaRef.current, {
       mode: { name: "javascript", json: true },
-      theme: theme === "dark" ? "dracula" : "eclipse",   // 👈 initial theme
+      theme: theme === "light" ? "eclipse" : "dracula",
       autoCloseTags: true,
       autoCloseBrackets: true,
       lineNumbers: true,
     });
 
     editorRef.current = editor;
-    editor.setSize(null, "100%");
+    editor.setSize("100%", "100%");
 
     editor.on("change", (instance, changes) => {
       const { origin } = changes;
       const code = instance.getValue();
       onCodeChange(code);
 
-      if (origin !== "setValue" && socket) {
-        socket.emit(ACTIONS.CODE_CHANGE, {
-          roomId,
+      // 💡 use refs so we always hit the current socket + roomId
+      const currentSocket = socketRef.current;
+      const currentRoomId = roomIdRef.current;
+
+      if (origin !== "setValue" && currentSocket && currentRoomId) {
+        currentSocket.emit(ACTIONS.CODE_CHANGE, {
+          roomId: currentRoomId,
           code,
         });
       }
     });
-  }, [onCodeChange, roomId, socket, theme]);
 
-  // Switch theme when `theme` changes
+    return () => {
+      editor.toTextArea();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // don't re-init editor
+
+  // 🔹 React to theme changes
   useEffect(() => {
     if (!editorRef.current) return;
     editorRef.current.setOption(
       "theme",
-      theme === "dark" ? "dracula" : "eclipse"
+      theme === "light" ? "eclipse" : "dracula"
     );
   }, [theme]);
 
-  // Listen for code from server
+  // 🔹 Listen for CODE_CHANGE from server
   useEffect(() => {
     if (!socket) return;
 
@@ -70,8 +91,8 @@ function Editor({ socket, roomId, onCodeChange, theme }) {
   }, [socket]);
 
   return (
-    <div style={{ height: "600px" }}>
-      <textarea id="realtimeEditor"></textarea>
+    <div style={{ height: "100%", width: "100%" }}>
+      <textarea ref={textareaRef} id="realtimeEditor" />
     </div>
   );
 }

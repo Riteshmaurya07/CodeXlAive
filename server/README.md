@@ -1,52 +1,126 @@
-# CodeCast - Real-time Code Collaboration
+# 📌 CodeXLive — Real-Time Collaborative Code Editor
 
-CodeCast is a real-time code collaboration web application that allows multiple users to collaborate on code in the same virtual room. It's built using the MERN (MongoDB, Express.js, React, Node.js) stack and Socket.IO for real-time communication.
+CodeXLive is a real-time collaborative coding platform built with **React (Vite)**, **Node.js**, **Socket.io**, and the **JDoodle Compiler API**.  
+Multiple users can join a room, write code together, and run programs in various languages — all in real time.
 
-## Live Demo
+---
 
-You can try out CodeCast by visiting the [live demo](https://codecast-324z.onrender.com). Create or join a room and start collaborating with others in real time!
-### DEMO VIDEO
-https://github.com/Yadvendra016/CodeCast/assets/91756355/dadc9f09-ef24-4c73-aa43-223f7a817f9f
+## 🚀 Features
 
-## Features
+### 📝 Real-Time Collaborative Editor  
+- Multiple users can edit code in the same room  
+- Changes sync instantly using **Socket.io**
 
-- Create or join a virtual "room" by entering a room ID.
-- Set your username to identify yourself in the room.
-- Real-time code collaboration with other users in the same room.
-- Changes made by one user are instantly reflected on all connected clients.
-- Code highlighting and editor customization options.
+### 💻 Multi-Language Code Compiler  
+Supports languages like:  
+`Python3`, `Java`, `C`, `C++`, `NodeJS`, `Go`, `Ruby`, `PHP`, `Swift`, `Rust`, `SQL`, `C#`, `Bash`, and more  
+- Execution powered by **JDoodle API**  
+- Output displayed in a bottom panel
 
-## Technologies Used
+### 🎨 Light / Dark Mode  
+- Switchable CodeMirror themes
 
-- Express.js: Handling API requests.
-- React: Building the front-end interface.
-- Node.js: Running the server.
-- Socket.IO: Enabling real-time communication.
-- uuid: Generating unique room IDs.
-- CodeMirror: Providing the code editor.
+### 👥 Active User List  
+- Shows all users connected to the same room in real time
 
-## Usage
+### 🔗 Sharable Room IDs  
+- Generate unique Room IDs  
+- Copy and share easily
 
-1. Open the [CodeCast live demo](https://codecast-324z.onrender.com).
-2. Enter a Room ID or generate a new one.
-3. Set your username.
-4. Start collaborating with others in the same room.
+---
 
-## Development
+## 🏗 Tech Stack
 
-If you want to run CodeCast locally or contribute to its development, follow these steps:
+### Frontend
+- React (Vite)
+- CodeMirror 5
+- Bootstrap
+- React Hot Toast
+- Socket.io-client
+- Axios
 
-1. Clone the repository:
+### Backend
+- Node.js
+- Express
+- Socket.io
+- Axios (JDoodle API)
+- CORS
 
-   ```bash
-   git clone https://github.com/yourusername/codecast.git
-   cd codecast
-   ```
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Start the development server:
-   ```
-   npm start
-   ```
+---
+
+## 📂 Project Structure
+
+CodeXLive/
+│
+├── client/
+│ ├── public/
+│ ├── src/
+│ │ ├── components/
+│ │ ├── Actions.js
+│ │ ├── Socket.js
+│ │ ├── App.jsx
+│ │ ├── main.jsx
+│ │ ├── index.css
+│ ├── vite.config.js
+│ └── package.json
+│
+└── server/
+├── Actions.js
+├── index.js
+├── .env
+└── package.json
+
+
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/your-username/CodeXLive.git
+cd CodeXLive
+
+
+#Backend Setup (Server)
+cd server
+npm install
+
+
+*Create .env in server/:
+
+PORT=5000
+JDOODLE_CLIENT_ID=your_id
+JDOODLE_CLIENT_SECRET=your_secret
+
+
+* Run Server
+node index.js
+
+** Server URL
+http://localhost:5000
+
+
+## Frontend Setup (client)
+cd client
+npm install
+
+** Create .env in client/:
+VITE_BACKEND_URL=http://localhost:5000
+
+
+** Run frontend:
+npm run dev
+
+**frontend Url
+http://localhost:3000
+
+
+##Environment Variables Summary
+PORT=5000
+JDOODLE_CLIENT_ID=
+JDOODLE_CLIENT_SECRET=
+
+**Client
+VITE_BACKEND_URL=http://localhost:5000
